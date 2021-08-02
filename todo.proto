@@ -3,19 +3,19 @@ syntax = "proto3";
 package todoPackage;
 
 service Todo {
-    rpc createTodo(TodoItem ) returns (TodoItem)
-    rpc readTodos(void) returns (TodoItems)
+    rpc createTodo(TodoItem) returns (TodoItem);
+    rpc readTodos(Empty) returns (TodoItems);
+    
 }
 
-message void {
-
-}
+message Empty {}
 
 message TodoItem {
     int32 id = 1;
     string description = 2;
+    bool done = 3;
 }
 
 message TodoItems {
-    repeated TodoItem items = 1
+    repeated TodoItem items = 1;
 }
