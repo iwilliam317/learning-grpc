@@ -27,10 +27,15 @@ switch (action) {
                 response.items.forEach(todo => {
                     console.table(todo)
                 });
-                console.table()
             }
 
         })
+        break
+    case 'readTodosStream':
+        const call = client.readTodosStream()
+
+        call.on('data', item => console.log(JSON.stringify(item)))
+        call.on('end', e => console.log('server done'))
         break
 
 }
