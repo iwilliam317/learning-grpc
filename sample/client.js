@@ -1,6 +1,6 @@
 const grpc = require('grpc')
 const protoLoader = require('@grpc/proto-loader')
-const packageDefinition = protoLoader.loadSync('todo.proto', {})
+const packageDefinition = protoLoader.loadSync(__dirname+'/todo.proto', {})
 
 const grpcObject = grpc.loadPackageDefinition(packageDefinition)
 
