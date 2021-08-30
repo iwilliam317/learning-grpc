@@ -12,7 +12,7 @@ const client = new chatPackage.Chat(REMOTE_SERVER, grpc.credentials.createInsecu
 
 
 //Read terminal Lines
-var rl = readline.createInterface({
+const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
