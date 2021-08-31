@@ -8,19 +8,38 @@ const REMOTE_SERVER = '0.0.0.0:3000'
 const server = new grpc.Server()
 
 server.bind(REMOTE_SERVER, grpc.ServerCredentials.createInsecure())
-const users = []
+const clients = new Map()
 
-server.addService(chatPackage.Chat.service,{
+const notifyClients = (user, message, users = clients) => {
+    for (let [client, call] of users) {
+        if (client != user) {
+            call.write(message)
+        }
+    }
+}
+
+server.addService(chatPackage.Chat.service, {
     'chat': (call) => {
-        users.push(call)
-        users.forEach(u => {
-            u.write({user: u.metadata.get('user'), text: 'user joined'})
-        })
+        const user = call.metadata.get('user')
+
+        if (!clients.get(user)) {
+            clients.set(user, call)
+        }
+        notifyClients(user, { user, text: "joined the chat..." })
+
 
         call.on('data', message => {
-            users.forEach(u => u.write(message))
+            notifyClients(user, message)
+        })
+
+        call.on('end', () => {
+            call.write({user, text: 'leaving chat...'})
+            notifyClients(user, {user, text: 'left the chat...'})
+            call.end()
         })
 
     }
 })
+
+
 server.start()
